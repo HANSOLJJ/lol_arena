@@ -1,9 +1,9 @@
 <!--
   투기장 시즌 전적 대시보드 (단일 파일, 정적)
-  - history_data.js(window.HISTORY_DATA)를 읽어 브라우저에서 전부 동적 계산
+  - history_data.json을 fetch로 읽어 브라우저에서 전부 동적 계산
   - 탭: 개인 / 2인·3인 시너지 / 챔피언 / 3:3 매치업, 기간(시즌·세션)·인원·최소판수 필터
   - 외부 의존성 없음(챔프 초상화만 Data Dragon CDN, 실패해도 텍스트로 동작)
-  - 데이터 갱신은 봇(game_recorder)이 history_data.js를 재생성/업로드
+  - 데이터 갱신은 봇(game_recorder)이 history_data.json을 재생성/업로드
 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -138,18 +138,21 @@
   <div class="note" id="note"></div>
 </div>
 
-<script src="history_data.js"></script>
 <script>
 /*
  * 대시보드 로직 (IIFE로 전역 오염 방지)
  * 흐름: 데이터 로드/파생 → 컨트롤(기간·인원·최소판수·탭) 구성 → render()가 현재 탭 계산·표시
  * state = { tab, sel(선택 인원 Set), min(최소 판수), sort(테이블별 정렬 상태) }
  */
-(function () {
-  const D = window.HISTORY_DATA;
+(async function () {
+  // 같은 사이트의 history_data.json을 fetch (?t= 캐시버스터로 새로고침 시 항상 최신).
+  // 로컬에서 볼 땐 file:// fetch가 막히므로 정적 서버로 열 것 (python -m http.server).
+  const D = await fetch("history_data.json?t=" + Date.now())
+    .then((r) => (r.ok ? r.json() : null))
+    .catch(() => null);
   if (!D) {
     document.getElementById("view").innerHTML =
-      '<div class="empty">history_data.js 를 찾을 수 없습니다. parse_all_history.py 를 먼저 실행하세요.</div>';
+      '<div class="empty">history_data.json 을 불러오지 못했습니다. 로컬이면 정적 서버로 여세요 (python -m http.server).</div>';
     return;
   }
   const players = D.players;                 // id -> name
