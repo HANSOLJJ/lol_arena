@@ -64,6 +64,8 @@
   }
   th.num, td.num { text-align: right; }
   th:hover { color: var(--text); }
+  th.static { cursor: default; }
+  th.static:hover { color: var(--muted); }
   th .arrow { color: var(--accent); font-size: 11px; }
   tbody tr { border-bottom: 1px solid var(--border); }
   tbody tr:last-child { border-bottom: none; }
@@ -134,22 +136,22 @@
     .tab, .chip-t, .clearbtn { min-height: 44px; }
     .player-table { display: none; }
     .player-mobile { display: block; }
-    .player-sort { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--border); }
-    .player-sort label { display: flex; flex-direction: column; gap: 4px; min-width: 0;
-      font-size: 12px; color: var(--muted); }
-    .player-sort select { width: 100%; min-width: 0; }
+    .player-heading { padding: 2px 12px; border-bottom: 1px solid var(--border);
+      color: var(--muted); font-size: 13px; }
+    .player-heading > :not(:first-child) { text-align: right; }
+    .player-heading button { min-height: 44px; padding: 0; border: 0;
+      background: none; color: inherit; font-size: inherit; font-weight: 600; cursor: pointer; }
+    .player-heading .arrow { color: var(--accent); font-size: 11px; }
     .player-list { list-style: none; padding: 0; margin: 0; }
     .player-item { padding: 10px 12px 12px; border-bottom: 1px solid var(--border);
       font-variant-numeric: tabular-nums; }
     .player-item:last-child { border-bottom: 0; }
-    .player-primary { display: grid; grid-template-columns: minmax(0, 1fr) minmax(72px, max-content) minmax(52px, max-content);
+    .player-primary, .player-heading { display: grid; grid-template-columns: minmax(0, 1fr) minmax(72px, max-content) minmax(52px, max-content);
       align-items: center; gap: 10px; }
     .player-primary .player-link { min-width: 0; }
     .player-rate, .player-money { display: flex; flex-direction: column; text-align: right; }
     .player-rate strong { font-size: 16px; font-weight: 600; }
     .player-rate .wl, .player-money .earnings { font-size: 13px; }
-    .player-money .caption { color: var(--muted); font-size: 12px; }
     .player-secondary { display: flex; align-items: center; justify-content: space-between;
       gap: 8px; margin-top: 8px; }
     .player-champs { min-width: 0; }
@@ -478,14 +480,14 @@
   /**
    * 정렬 가능한 표를 #view(또는 지정 id)에 그린다.
    * @param id       렌더 대상 요소 id 겸 정렬 상태 키 (state.sort[id]).
-   * @param cols     컬럼 정의 [{ label, num(우측정렬·숫자정렬), mob(모바일에서도 표시, 없으면 ≤480px 숨김), val(row)=>정렬값, cell(row)=>'<td>..</td>' }].
+   * @param cols     컬럼 정의 [{ label, num(우측정렬·숫자정렬), mob(모바일 표시), sortable(false이면 정렬 불가), val(row)=>정렬값, cell(row)=>'<td>..</td>' }].
    * @param rows     표시할 행 배열 (제자리 정렬됨; 동률이면 row._n 큰 순 보조 정렬).
    * @param defSort  기본 정렬 { col, dir:'asc'|'desc' } (해당 id에 정렬 상태가 없을 때 적용).
    * @param onRow    (선택) 행 클릭 콜백. 있으면 tr에 clickable + 클릭 핸들러 부착.
    */
   function table(id, cols, rows, defSort, onRow) {
     const st = state.sort[id] || (state.sort[id] = { col: defSort.col, dir: defSort.dir });
-    if (st.col >= cols.length) { st.col = defSort.col; st.dir = defSort.dir; }  // 컬럼 수 다른 테이블로 전환 시 방어
+    if (st.col >= cols.length || cols[st.col].sortable === false) { st.col = defSort.col; st.dir = defSort.dir; }
     rows.sort((a, b) => {
       const va = cols[st.col].val(a), vb = cols[st.col].val(b);
       let c = typeof va === "string" ? va.localeCompare(vb) : va - vb;
@@ -497,7 +499,8 @@
     let html = "<table><thead><tr>";
     cols.forEach((col, i) => {
       const arrow = i === st.col ? ` <span class="arrow">${st.dir === "asc" ? "▲" : "▼"}</span>` : "";
-      html += `<th scope="col" tabindex="0" aria-sort="${i === st.col ? (st.dir === "asc" ? "ascending" : "descending") : "none"}" class="${col.num ? "num" : ""}" data-c="${i}">${col.label}${arrow}</th>`;
+      const sorting = col.sortable === false ? '' : `tabindex="0" aria-sort="${i === st.col ? (st.dir === "asc" ? "ascending" : "descending") : "none"}" data-c="${i}"`;
+      html += `<th scope="col" ${sorting} class="${col.num ? "num" : ""} ${col.sortable === false ? "static" : ""}">${col.label}${arrow}</th>`;
     });
     html += "</tr></thead><tbody>";
     if (!rows.length) {
@@ -511,7 +514,7 @@
     // 모바일 표시 열 마킹 — cols[i].mob 이면 .mob 부여, 나머지는 ≤480px에서 CSS로 숨김
     view.querySelectorAll("tr").forEach((tr) =>
       [...tr.children].forEach((c, i) => { if (cols[i] && cols[i].mob) c.classList.add("mob"); }));
-    view.querySelectorAll("th").forEach((th) => {
+    view.querySelectorAll("th[data-c]").forEach((th) => {
       th.onclick = () => {
         const c = +th.dataset.c;
         if (st.col === c) st.dir = st.dir === "asc" ? "desc" : "asc";
@@ -531,6 +534,7 @@
 
   let playerOverviewSort = null;
   let returningPlayer = null;
+  const PLAYER_WINRATE_COL = 4;
   function openPlayer(id) {
     playerOverviewSort = { ...state.sort.view };
     returningPlayer = id;
@@ -538,24 +542,21 @@
     document.querySelector(".backbar")?.focus({ preventScroll: true });
   }
 
-  function renderPlayerMobile(rows, cols, st) {
+  function renderPlayerMobile(rows, st) {
     const view = document.getElementById("view");
     view.querySelector("table").classList.add("player-table");
     view.insertAdjacentHTML("beforeend", `<section class="player-mobile" aria-label="플레이어 전적">
-      <div class="player-sort">
-        <label for="player-sort-col">정렬 기준<select id="player-sort-col">${cols.map((col, i) =>
-          `<option value="${i}"${i === st.col ? " selected" : ""}>${col.label}</option>`).join("")}</select></label>
-        <label for="player-sort-dir">정렬 방향<select id="player-sort-dir">
-          <option value="desc"${st.dir === "desc" ? " selected" : ""}>내림차순</option>
-          <option value="asc"${st.dir === "asc" ? " selected" : ""}>오름차순</option>
-        </select></label>
+      <div class="player-heading">
+        <span>플레이어</span>
+        <button type="button" id="player-winrate-sort" aria-label="승률 ${st.dir === "desc" ? "내림차순, 오름차순으로 변경" : "오름차순, 내림차순으로 변경"}">승률 <span class="arrow" aria-hidden="true">${st.dir === "asc" ? "▲" : "▼"}</span></button>
+        <span>번 돈</span>
       </div>
       <ul class="player-list">${rows.map((r) => `<li class="player-item">
         <div class="player-primary">
           <button type="button" class="player-link" data-player="${r.id}" aria-label="${escapeHTML(r.name)} 챔피언별 전적">${escapeHTML(r.name)} <span class="drill" aria-hidden="true">›</span></button>
           <div class="player-rate"><strong aria-label="승률 ${wr(r.w, r.n).toFixed(0)}퍼센트">${wr(r.w, r.n).toFixed(0)}%</strong>
             <span class="wl"><span class="w">${r.w}</span>승 <span class="l">${r.n - r.w}</span>패</span></div>
-          <div class="player-money"><span class="caption">번 돈</span>${earnings(r)}</div>
+          <div class="player-money">${earnings(r)}</div>
         </div>
         <div class="player-secondary">
           <div class="player-champs"><span class="caption">주력 챔프 TOP5</span><div class="champ-strip">${topChampions(r)}</div></div>
@@ -563,14 +564,12 @@
         </div>
       </li>`).join("") || '<li class="empty">플레이어 데이터가 없습니다.</li>'}</ul>
     </section>`);
-    ["player-sort-col", "player-sort-dir"].forEach((id) => {
-      document.getElementById(id).onchange = (event) => {
-        if (id === "player-sort-col") st.col = +event.target.value;
-        else st.dir = event.target.value;
-        render();
-        document.getElementById(id).focus({ preventScroll: true });
-      };
-    });
+    document.getElementById("player-winrate-sort").onclick = () => {
+      st.col = PLAYER_WINRATE_COL;
+      st.dir = st.dir === "asc" ? "desc" : "asc";
+      render();
+      document.getElementById("player-winrate-sort").focus({ preventScroll: true });
+    };
     view.querySelectorAll("[data-player]").forEach((button) => {
       button.onclick = () => openPlayer(button.dataset.player);
     });
@@ -660,7 +659,7 @@
         .slice(0, 5);
       return { id, name: nameOf(id), n: games.length, w, champN: Object.keys(cs).length, top5, _n: games.length };
     });
-    const { cols, st } = table("view",
+    const { st } = table("view",
       [
         { label: "플레이어", num: false, mob: true, val: (r) => r.name, cell: (r) => `<td class="combo"><button type="button" class="player-link" data-player="${r.id}" aria-label="${escapeHTML(r.name)} 챔피언별 전적">${escapeHTML(r.name)} <span class="drill" aria-hidden="true">챔프 ›</span></button></td>` },
         { label: "판", num: true, mob: true, val: (r) => r.n, cell: (r) => `<td class="num">${r.n}</td>` },
@@ -669,10 +668,10 @@
           `<td><div class="champ-strip">${topChampions(r)}</div></td>` },
         { label: "승률", num: true, mob: true, val: (r) => wr(r.w, r.n), cell: (r) => barCell(r.w, r.n) },
         { label: "번 돈", num: true, mob: true, val: (r) => 2 * r.w - r.n, cell: (r) => `<td class="num">${earnings(r)}</td>` },
-      ],
-      rows, { col: 4, dir: "desc" },
+      ].map((col, i) => ({ ...col, sortable: i === PLAYER_WINRATE_COL })),
+      rows, { col: PLAYER_WINRATE_COL, dir: "desc" },
       (r) => openPlayer(r.id));
-    renderPlayerMobile(rows, cols, st);
+    renderPlayerMobile(rows, st);
   }
 
   /**
