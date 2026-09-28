@@ -1,7 +1,7 @@
 // 단일 경기 결과 카드(팀 대진, 승리 강조, 번복 배지) 렌더링 컴포넌트
 import { formatCorrectedInfo } from '../lib/corrected.ts'
 import { isRowHighlighted } from '../lib/filter.ts'
-import { formatKoreanDateTime } from '../lib/time.ts'
+import { formatKoreanDate } from '../lib/time.ts'
 import type { Game } from '../lib/types.ts'
 import { ChampionPortrait } from './ChampionPortrait.tsx'
 import styles from './GameCard.module.css'
@@ -24,7 +24,7 @@ export function GameCard({
   const isTeam1Winner = game.winner === 'team1'
   const isTeam2Winner = game.winner === 'team2'
 
-  const formattedTime = formatKoreanDateTime(game.time)
+  const formattedTime = formatKoreanDate(game.time)
   const correctedInfo = game.corrected ? formatCorrectedInfo(game.corrected) : null
 
   return (
