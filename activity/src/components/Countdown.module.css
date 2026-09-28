@@ -1,0 +1,42 @@
+.box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 240px;
+  text-align: center;
+}
+
+.number {
+  font-size: clamp(96px, 42vw, 200px);
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+.unit {
+  font-size: 18px;
+  color: var(--muted);
+}
+
+.closing {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--warn);
+}
+
+.idle {
+  margin: 0;
+  font-size: 18px;
+  color: var(--text);
+}
+
+.hint {
+  margin: 0;
+  font-size: 14px;
+  color: var(--muted);
+}
