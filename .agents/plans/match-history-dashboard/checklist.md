@@ -10,9 +10,9 @@
   - [x] `session.ts` & `session.test.ts`: 6시간 공백 기준 세션 분할, 라벨 포맷팅, 기본 기간(최신 시즌) 테스트
   - [x] `filter.ts` & `filter.test.ts`: 기간 필터, 다중 플레이어 칩 필터, 챔피언 필터 테스트
   - [x] `ddragon.ts` & `ddragon.test.ts`: Data Dragon 매핑 및 URL 생성 (기본 주소 인자 지원)
-- [ ] 3. 커스텀 훅 및 자동 갱신 구현 (`src/dashboard/hooks/`)
-  - [ ] `useHistoryData.ts`: 초기 로드, visibilitychange 감지, 20초 주기 HEAD 요청 ETag/Last-Modified 비교 폴링, 수동 갱신
-  - [ ] `useChampionPortraits.ts`: Data Dragon 초상화 매핑 로드 훅
+- [x] 3. 커스텀 훅 및 자동 갱신 구현 (`src/dashboard/hooks/`)
+  - [x] `useHistoryData.ts`: 초기 로드, visibilitychange 감지, 20초 주기 HEAD 요청 ETag/Last-Modified 비교 폴링, 수동 갱신
+  - [x] `useChampionPortraits.ts`: Data Dragon 초상화 매핑 로드 훅
 - [ ] 4. React 컴포넌트 및 스타일 구현 (`src/dashboard/components/`, `src/dashboard/`)
   - [ ] 공통 스타일 변수 및 리셋 CSS
   - [ ] `DashboardHeader.tsx`: 타이틀, 갱신 시각, 새로고침 버튼
