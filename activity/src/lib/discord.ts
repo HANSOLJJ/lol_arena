@@ -23,6 +23,11 @@ function clientId(): string {
   return import.meta.env.VITE_DISCORD_CLIENT_ID
 }
 
+/** 현재 실행 중인 길드 ID를 반환한다. */
+export function getGuildId(): string | null {
+  return sdk?.guildId ?? null
+}
+
 function readySdk(): { sdk: DiscordSDK; ready: Promise<void> } {
   if (sdk === null || ready === null) {
     sdk = new DiscordSDK(clientId())

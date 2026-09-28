@@ -19,6 +19,7 @@ import {
   type PongMessage,
   type ReplyMessage,
   type StateMessage,
+  type Team,
 } from './protocol.ts'
 
 export const RECONNECT_DELAYS_MS = [500, 1000, 2000, 5000] as const
@@ -161,19 +162,65 @@ export class Connection {
   }
 
   /** 세션으로 연결을 시작한다. 재인증 뒤에도 새 세션으로 다시 부른다. */
-  start(session: string): void {
-    if (this.#disposed) return
-    this.#session = session
-    this.#reconnectAttempt = 0
-    this.#connect()
+  start(session: string): void
+  /** 게임 시작을 요청한다. */
+  start(game_id: string | null, guild_id: string | null): Promise<ReplyMessage>
+  start(arg1: string | null, arg2?: string | null): Promise<ReplyMessage> | void {
+    if (arg2 === undefined && typeof arg1 === 'string' && !arg1.startsWith('g-')) {
+      if (this.#disposed) return
+      this.#session = arg1
+      this.#reconnectAttempt = 0
+      this.#connect()
+      return
+    }
+    return this.requestStart(arg1, arg2 ?? null)
   }
 
-  requestDemoCountdown(seconds: number): Promise<ReplyMessage> {
+  requestStart(game_id: string | null, guild_id: string | null): Promise<ReplyMessage> {
     if (!this.#open) return Promise.reject(new Error('연결되어 있지 않습니다.'))
-    const id = this.#nextId('d')
+    const id = this.#nextId('g')
     return new Promise((resolve, reject) => {
       this.#pendingRequests.set(id, { resolve, reject })
-      this.#send({ t: 'demo_countdown', id, seconds })
+      this.#send({ t: 'start', id, game_id, guild_id })
+    })
+  }
+
+  pick(game_id: string, turn_id: string, champion_id: string): Promise<ReplyMessage> {
+    return this.requestPick(game_id, turn_id, champion_id)
+  }
+
+  requestPick(game_id: string, turn_id: string, champion_id: string): Promise<ReplyMessage> {
+    if (!this.#open) return Promise.reject(new Error('연결되어 있지 않습니다.'))
+    const id = this.#nextId('k')
+    return new Promise((resolve, reject) => {
+      this.#pendingRequests.set(id, { resolve, reject })
+      this.#send({ t: 'pick', id, game_id, turn_id, champion_id })
+    })
+  }
+
+  result(game_id: string, winner: Team): Promise<ReplyMessage> {
+    return this.requestResult(game_id, winner)
+  }
+
+  requestResult(game_id: string, winner: Team): Promise<ReplyMessage> {
+    if (!this.#open) return Promise.reject(new Error('연결되어 있지 않습니다.'))
+    const id = this.#nextId('r')
+    return new Promise((resolve, reject) => {
+      this.#pendingRequests.set(id, { resolve, reject })
+      this.#send({ t: 'result', id, game_id, winner })
+    })
+  }
+
+  reverse(game_id: string, expected_winner: Team): Promise<ReplyMessage> {
+    return this.requestReverse(game_id, expected_winner)
+  }
+
+  requestReverse(game_id: string, expected_winner: Team): Promise<ReplyMessage> {
+    if (!this.#open) return Promise.reject(new Error('연결되어 있지 않습니다.'))
+    const id = this.#nextId('v')
+    return new Promise((resolve, reject) => {
+      this.#pendingRequests.set(id, { resolve, reject })
+      this.#send({ t: 'reverse', id, game_id, expected_winner })
     })
   }
 

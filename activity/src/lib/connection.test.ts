@@ -170,7 +170,7 @@ describe('Connection 연결 상태', () => {
     const { env, conn } = setup()
     const s1 = env.last()
     s1.open()
-    s1.receive(hello({ protocol_version: 2 }))
+    s1.receive(hello({ protocol_version: 1 }))
     assert.equal(conn.getSnapshot().status, 'update_required')
     assert.notEqual(s1.closedWith, null)
     assert.deepEqual(env.timers.delays(), [])
@@ -227,27 +227,51 @@ describe('Connection 종료 코드와 재접속', () => {
 })
 
 describe('Connection 요청 ID', () => {
-  it('reply를 같은 id의 요청에 대응시킨다', async () => {
+  it('start, pick, result, reverse 요청이 규격대로 만들어지고 reply를 같은 id의 요청에 대응시킨다', async () => {
     const { env, conn } = setup()
     const s1 = env.last()
     handshake(env, s1)
-    const pending = conn.requestDemoCountdown(20)
-    const req = s1.sentOf('demo_countdown')[0]
-    assert.equal(req.seconds, 20)
-    s1.receive({ t: 'reply', id: 'd-unknown', ok: false, code: 'bad_request', message: null, state_version: null })
-    s1.receive({ t: 'reply', id: req.id, ok: true, code: 'ok', message: null, state_version: 1 })
-    const reply = await pending
-    assert.equal(reply.id, req.id)
-    assert.equal(reply.ok, true)
+
+    // start
+    const pStart = conn.start('g-1', 'guild-1')
+    const reqStart = s1.sentOf('start')[0]
+    assert.deepEqual(reqStart, { t: 'start', id: reqStart.id, game_id: 'g-1', guild_id: 'guild-1' })
+    s1.receive({ t: 'reply', id: reqStart.id, ok: true, code: 'ok', message: null, state_version: 10 })
+    const resStart = await pStart
+    assert.equal(resStart.ok, true)
+
+    // pick
+    const pPick = conn.pick('g-1', 'turn-1', 'Ahri')
+    const reqPick = s1.sentOf('pick')[0]
+    assert.deepEqual(reqPick, { t: 'pick', id: reqPick.id, game_id: 'g-1', turn_id: 'turn-1', champion_id: 'Ahri' })
+    s1.receive({ t: 'reply', id: reqPick.id, ok: true, code: 'ok', message: null, state_version: 11 })
+    const resPick = await pPick
+    assert.equal(resPick.ok, true)
+
+    // result
+    const pResult = conn.result('g-1', 'team1')
+    const reqResult = s1.sentOf('result')[0]
+    assert.deepEqual(reqResult, { t: 'result', id: reqResult.id, game_id: 'g-1', winner: 'team1' })
+    s1.receive({ t: 'reply', id: reqResult.id, ok: true, code: 'ok', message: null, state_version: 12 })
+    const resResult = await pResult
+    assert.equal(resResult.ok, true)
+
+    // reverse
+    const pReverse = conn.reverse('g-1', 'team1')
+    const reqReverse = s1.sentOf('reverse')[0]
+    assert.deepEqual(reqReverse, { t: 'reverse', id: reqReverse.id, game_id: 'g-1', expected_winner: 'team1' })
+    s1.receive({ t: 'reply', id: reqReverse.id, ok: true, code: 'ok', message: null, state_version: 13 })
+    const resReverse = await pReverse
+    assert.equal(resReverse.ok, true)
   })
 
   it('연결이 끊기면 대기 중인 요청을 거부한다', async () => {
     const { env, conn } = setup()
     handshake(env, env.last())
-    const pending = conn.requestDemoCountdown(20)
+    const pending = conn.pick('g-1', 't-1', 'Ahri')
     env.last().serverClose(1006)
     await assert.rejects(pending)
-    await assert.rejects(conn.requestDemoCountdown(20))
+    await assert.rejects(conn.pick('g-1', 't-1', 'Ahri'))
   })
 })
 

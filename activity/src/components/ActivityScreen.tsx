@@ -1,116 +1,124 @@
-// Discord 안에서 보이는 1단계 화면: 연결 상태, 사용자, 카운트다운, 데모 시작, RTT 통계
-import { useState } from 'react'
-import { useActivity, type AuthState } from '../hooks/useActivity.ts'
-import type { RttStats } from '../lib/clock.ts'
-import type { ConnectionSnapshot } from '../lib/connection.ts'
+// Discord 안에서 동작하는 픽 화면(반응형 3가지 뷰, phase별 화면, 통신 연동)
+import { useActivity } from '../hooks/useActivity.ts'
+import { useLayoutMode } from '../hooks/useLayoutMode.ts'
 import styles from './ActivityScreen.module.css'
-import { Countdown } from './Countdown.tsx'
+import { ChampionGrid } from './ChampionGrid.tsx'
+import { Header } from './Header.tsx'
+import { PhaseActions } from './PhaseActions.tsx'
+import { PickOrderList } from './PickOrderList.tsx'
+import { PipView } from './PipView.tsx'
+import { TeamRoster } from './TeamRoster.tsx'
+import { Toast } from './Toast.tsx'
+import { TurnCountdown } from './TurnCountdown.tsx'
 
-const DEMO_SECONDS = 20
-
-type Tone = 'ok' | 'wait' | 'bad'
-
-function statusOf(auth: AuthState, snapshot: ConnectionSnapshot | null): { label: string; tone: Tone } {
-  if (auth.kind === 'login_required') return { label: '다시 로그인 필요', tone: 'bad' }
-  switch (snapshot?.status) {
-    case 'connected':
-      return { label: '연결됨', tone: 'ok' }
-    case 'disconnected':
-      return { label: '연결 끊김', tone: 'bad' }
-    case 'reauth_required':
-      return { label: '다시 로그인 필요', tone: 'bad' }
-    case 'update_required':
-      return { label: '업데이트 필요', tone: 'bad' }
-    default:
-      return { label: '연결 중', tone: 'wait' }
-  }
+interface Props {
+  previewPhase?: string | null
 }
 
-const ms = (v: number | null) => (v === null ? '–' : `${Math.round(v)}ms`)
+export function ActivityScreen({ previewPhase }: Props) {
+  const { auth, snapshot, state, isPending, toast, login, start, pick, result, reverse } = useActivity(previewPhase)
+  const layoutMode = useLayoutMode()
 
-function RttPanel({ rtt }: { rtt: RttStats }) {
-  return (
-    <dl className={styles.rtt} aria-label="서버 왕복 시간">
-      <div>
-        <dt>샘플</dt>
-        <dd>{rtt.count}</dd>
-      </div>
-      <div>
-        <dt>p50</dt>
-        <dd>{ms(rtt.p50)}</dd>
-      </div>
-      <div>
-        <dt>p95</dt>
-        <dd>{ms(rtt.p95)}</dd>
-      </div>
-      <div>
-        <dt>최대</dt>
-        <dd>{ms(rtt.max)}</dd>
-      </div>
-    </dl>
-  )
-}
-
-export function ActivityScreen() {
-  const { auth, snapshot, login, startDemoCountdown } = useActivity()
-  const [notice, setNotice] = useState<string | null>(null)
-  const [sending, setSending] = useState(false)
-
-  const status = statusOf(auth, snapshot)
-  const user = snapshot?.user ?? (auth.kind === 'ok' ? auth.user : null)
-  const state = snapshot?.state ?? null
-  const counting = state?.phase === 'picking'
-  const canStart = snapshot?.status === 'connected' && !counting && !sending
-
-  const onStart = () => {
-    setSending(true)
-    setNotice(null)
-    startDemoCountdown(DEMO_SECONDS)
-      .then((reply) => {
-        if (!reply.ok) setNotice(reply.message ?? `데모를 시작하지 못했습니다. (${reply.code})`)
-      })
-      .catch(() => setNotice('데모를 시작하지 못했습니다. 연결이 끊겼습니다. 다시 연결되면 눌러 주세요.'))
-      .finally(() => setSending(false))
-  }
-
-  return (
-    <main className={styles.screen}>
-      <header className={styles.header}>
-        <span className={styles.status} data-tone={status.tone}>
-          <span className={styles.dot} aria-hidden="true" />
-          {status.label}
-        </span>
-        <span className={styles.user}>{user ? (user.global_name ?? user.username) : ''}</span>
-      </header>
-
-      {auth.kind === 'login_required' ? (
-        <section className={styles.message}>
-          <p>{auth.message}</p>
-          <p className={styles.sub}>Discord 계정으로 로그인해야 카운트다운을 볼 수 있습니다.</p>
-          <button type="button" className={styles.primary} onClick={login}>
+  // 인증 필요 화면
+  if (auth.kind === 'login_required') {
+    return (
+      <main className={styles.screenMobile}>
+        <div className={styles.centerMessage}>
+          <div className={styles.centerTitle}>{auth.message}</div>
+          <div className={styles.centerSub}>Discord 계정으로 로그인해야 픽 화면을 볼 수 있습니다.</div>
+          <button type="button" className={styles.btnPrimary} onClick={login}>
             Discord로 로그인
           </button>
-        </section>
-      ) : snapshot?.status === 'update_required' ? (
-        <section className={styles.message}>
-          <p>새 버전이 나왔습니다.</p>
-          <p className={styles.sub}>액티비티를 닫았다가 다시 열어 주세요.</p>
-        </section>
+        </div>
+      </main>
+    )
+  }
+
+  // 업데이트 필요 화면 (프로토콜 버전 불일치 또는 4400)
+  if (snapshot?.status === 'update_required') {
+    return (
+      <main className={styles.screenMobile}>
+        <div className={styles.centerMessage}>
+          <div className={styles.centerTitle}>새 버전이 나왔습니다</div>
+          <div className={styles.centerSub}>액티비티를 닫았다가 다시 열어 주세요.</div>
+        </div>
+      </main>
+    )
+  }
+
+  // Pip (작은 창) 모드
+  if (layoutMode === 'pip') {
+    return (
+      <div className={styles.screenPip}>
+        <PipView state={state} anchor={snapshot?.anchor ?? null} />
+        <Toast message={toast} />
+      </div>
+    )
+  }
+
+  const isConnected = snapshot?.status === 'connected'
+  const isPc = layoutMode === 'pc'
+  const isTurnPhase = state?.phase === 'starting' || state?.phase === 'picking'
+  const user = snapshot?.user ?? (auth.kind === 'ok' ? auth.user : null)
+
+  const handlePick = (championId: string) => {
+    if (!state || !state.game_id || !state.turn_id) return
+    pick(state.game_id, state.turn_id, championId)
+  }
+
+  if (isPc) {
+    return (
+      <main className={styles.screenPc}>
+        <Header status={snapshot?.status ?? 'idle'} user={user} state={state} isPc={true} />
+        <TeamRoster state={state} isPc={true} />
+
+        <div className={styles.pcBodyGrid}>
+          <div className={styles.pcLeftCol}>
+            {isTurnPhase && state ? (
+              <TurnCountdown state={state} anchor={snapshot?.anchor ?? null} />
+            ) : (
+              <PhaseActions
+                state={state}
+                isConnected={isConnected}
+                isPending={isPending}
+                onStart={start}
+                onReport={result}
+                onReverse={reverse}
+              />
+            )}
+            <PickOrderList state={state} isPc={true} />
+          </div>
+
+          <ChampionGrid state={state} isPending={isPending} isPc={true} onPick={handlePick} />
+        </div>
+
+        <Toast message={toast} />
+      </main>
+    )
+  }
+
+  return (
+    <main className={styles.screenMobile}>
+      <Header status={snapshot?.status ?? 'idle'} user={user} state={state} isPc={false} />
+      <TeamRoster state={state} isPc={false} />
+
+      {isTurnPhase && state ? (
+        <TurnCountdown state={state} anchor={snapshot?.anchor ?? null} />
       ) : (
-        <Countdown state={state} anchor={snapshot?.anchor ?? null} />
+        <PhaseActions
+          state={state}
+          isConnected={isConnected}
+          isPending={isPending}
+          onStart={start}
+          onReport={result}
+          onReverse={reverse}
+        />
       )}
 
-      <footer className={styles.footer}>
-        {notice && (
-          <p className={styles.notice} role="status">
-            {notice}
-          </p>
-        )}
-        <button type="button" className={styles.primary} onClick={onStart} disabled={!canStart}>
-          {DEMO_SECONDS}초 데모 카운트다운 시작
-        </button>
-        <RttPanel rtt={snapshot?.rtt ?? { count: 0, p50: null, p95: null, max: null }} />
-      </footer>
+      <PickOrderList state={state} isPc={false} />
+      <ChampionGrid state={state} isPending={isPending} isPc={false} onPick={handlePick} />
+
+      <Toast message={toast} />
     </main>
   )
 }

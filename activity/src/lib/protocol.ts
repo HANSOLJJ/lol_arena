@@ -1,17 +1,51 @@
-// 액티비티 서버와 주고받는 메시지 타입과 수신 JSON 런타임 검증 (ACTIVITY_PROTOCOL.md protocol_version 1)
+// 액티비티 서버와 주고받는 메시지 타입과 수신 JSON 런타임 검증 (ACTIVITY_PROTOCOL.md protocol_version 2)
 
-export const PROTOCOL_VERSION = 1
+export const PROTOCOL_VERSION = 2
 
 export const PHASES = ['none', 'starting', 'picking', 'awaiting_result', 'completed', 'aborted'] as const
 export type Phase = (typeof PHASES)[number]
 
 export type Role = 'player' | 'spectator'
+export type Team = 'team1' | 'team2'
 
 export interface DiscordUser {
   id: string
   username: string
   global_name: string | null
   avatar: string | null
+}
+
+export interface Player {
+  id: string
+  name: string
+  team: Team
+  wins: number
+}
+
+export interface Champion {
+  id: string
+  name: string
+}
+
+export interface CorrectedResult {
+  from: Team
+  at_ms: number
+}
+
+export interface GameResult {
+  winner: Team
+  recorded_ms: number
+  corrected: CorrectedResult | null
+}
+
+export interface Me {
+  id: string
+  role: Role
+  team: Team | null
+  can_start: boolean
+  can_pick: boolean
+  can_report: boolean
+  can_reverse: boolean
 }
 
 export interface HelloMessage {
@@ -44,13 +78,14 @@ export interface StateMessage {
   grace_ms: number | null
   turn_id: string | null
   current_index: number | null
-  // 목록 항목의 형식은 4단계에서 정한다.
-  players: unknown[]
-  pick_order: unknown[]
-  champions: unknown[]
-  selections: Record<string, unknown>
-  auto_assigned: unknown[]
-  me: { id: string; role: Role }
+  ddragon_version: string | null
+  players: Player[]
+  pick_order: string[]
+  champions: Champion[]
+  selections: Record<string, string>
+  auto_assigned: string[]
+  result: GameResult | null
+  me: Me
 }
 
 export interface ReplyMessage {
@@ -68,7 +103,10 @@ export type ServerMessage = HelloMessage | PongMessage | StateMessage | ReplyMes
 export type ClientMessage =
   | { t: 'ping'; id: string; c: number }
   | { t: 'sync'; id: string }
-  | { t: 'demo_countdown'; id: string; seconds: number }
+  | { t: 'start'; id: string; game_id: string | null; guild_id: string | null }
+  | { t: 'pick'; id: string; game_id: string; turn_id: string; champion_id: string }
+  | { t: 'result'; id: string; game_id: string; winner: Team }
+  | { t: 'reverse'; id: string; game_id: string; expected_winner: Team }
 
 export interface TokenResponse {
   access_token: string
@@ -108,10 +146,50 @@ function isPong(m: Obj): boolean {
   return isStr(m.id) && isNum(m.c) && isInt(m.s)
 }
 
+function isPlayer(v: unknown): v is Player {
+  return (
+    isObj(v) &&
+    isStr(v.id) &&
+    isStr(v.name) &&
+    (v.team === 'team1' || v.team === 'team2') &&
+    isInt(v.wins)
+  )
+}
+
+function isChampion(v: unknown): v is Champion {
+  return isObj(v) && isStr(v.id) && isStr(v.name)
+}
+
+function isGameResult(v: unknown): v is GameResult {
+  if (!isObj(v)) return false
+  if (v.winner !== 'team1' && v.winner !== 'team2') return false
+  if (!isInt(v.recorded_ms)) return false
+  if (v.corrected === null) return true
+  return (
+    isObj(v.corrected) &&
+    (v.corrected.from === 'team1' || v.corrected.from === 'team2') &&
+    isInt(v.corrected.at_ms)
+  )
+}
+
+function isMe(v: unknown): v is Me {
+  return (
+    isObj(v) &&
+    isStr(v.id) &&
+    (v.role === 'player' || v.role === 'spectator') &&
+    (v.team === null || v.team === 'team1' || v.team === 'team2') &&
+    isBool(v.can_start) &&
+    isBool(v.can_pick) &&
+    isBool(v.can_report) &&
+    isBool(v.can_reverse)
+  )
+}
+
 function isState(m: Obj): boolean {
   const me = m.me
   return (
     isInt(m.protocol_version) &&
+    m.protocol_version === PROTOCOL_VERSION &&
     isStr(m.server_epoch) &&
     orNull(isStr)(m.game_id) &&
     isInt(m.state_version) &&
@@ -124,14 +202,19 @@ function isState(m: Obj): boolean {
     orNull(isInt)(m.grace_ms) &&
     orNull(isStr)(m.turn_id) &&
     orNull(isInt)(m.current_index) &&
+    orNull(isStr)(m.ddragon_version) &&
     isArr(m.players) &&
+    m.players.every(isPlayer) &&
     isArr(m.pick_order) &&
+    m.pick_order.every(isStr) &&
     isArr(m.champions) &&
+    m.champions.every(isChampion) &&
     isObj(m.selections) &&
+    Object.values(m.selections).every(isStr) &&
     isArr(m.auto_assigned) &&
-    isObj(me) &&
-    isStr(me.id) &&
-    (me.role === 'player' || me.role === 'spectator')
+    m.auto_assigned.every(isStr) &&
+    orNull(isGameResult)(m.result) &&
+    isMe(me)
   )
 }
 
