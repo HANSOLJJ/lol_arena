@@ -16,6 +16,8 @@
   --team1-border: rgba(91, 140, 255, 0.45);
   --team2-tint: rgba(255, 107, 94, 0.1);
   --team2-border: rgba(255, 107, 94, 0.45);
+  --win: #3fb950;
+  --loss: #f85149;
 }
 
 * {
