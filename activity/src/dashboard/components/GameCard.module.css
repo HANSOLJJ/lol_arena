@@ -121,12 +121,11 @@
 }
 
 .teamBox.loser .playerName {
-  color: var(--muted);
+  color: color-mix(in srgb, var(--text) 75%, var(--panel2));
 }
 
 .teamBox.loser img {
-  filter: grayscale(1);
-  opacity: 0.6;
+  filter: brightness(0.7);
 }
 
 .resultLabel {
