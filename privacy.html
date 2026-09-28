@@ -149,7 +149,7 @@
         <p>서비스는 목적 달성에 필요한 최소한의 정보만을 처리합니다.</p>
         <ul>
           <li><strong>디스코드 OAuth 계정 정보 (`identify` 범위):</strong> Discord 사용자 고유 ID, 사용자명(Username), 전역 표시 이름(Global Name), 아바타 해시(Avatar Hash).</li>
-          <li><strong>디스코드 서버(길드) 정보:</strong> 서버 내 별명(Guild Nickname), 음성 채널 참가 여부 및 온라인 상태(친선전 팀 편성을 위한 확인 목적).</li>
+          <li><strong>디스코드 서버(길드) 정보:</strong> 서버 내 별명(Guild Nickname)과 온라인 상태(새 판을 시작할 때 온라인인 사람 가운데 6명을 뽑기 위한 목적).</li>
           <li><strong>게임 진행 및 전적 정보:</strong> 게임 판 번호, 시즌 번호, 경기 진행 시각, 팀 구성(1팀/2팀 배치), 선택한 챔피언 목록, 경기 승패 결과, 판정 번복 이력.</li>
         </ul>
       </div>
@@ -167,7 +167,7 @@
       <div class="section-card">
         <h2>4. 정보의 보관 및 제3자 제공</h2>
         <ul>
-          <li><strong>보관 장소 및 기간:</strong> 경기 전적 기록 데이터는 서비스 운영자의 개인 서버 및 안전한 GitHub 백업 저장소에 보관됩니다.</li>
+          <li><strong>보관 장소 및 기간:</strong> 경기 전적 기록 데이터는 서비스 운영자의 개인 서버에 보관되며, 백업을 위해 누구나 볼 수 있는 공개 GitHub 저장소(github.com/HANSOLJJ/lol_arena)에도 올라갑니다. 서비스를 운영하는 동안 보관합니다.</li>
           <li><strong>상업적 활용 금지:</strong> 수집된 정보를 판매하거나 광고 마케팅, 프로파일링 등 상업적 목적으로 일절 사용하지 않습니다.</li>
           <li><strong>제3자 제공:</strong> 운영자는 원칙적으로 이용자의 정보를 외부에 제공하거나 위탁하지 않습니다. 단, 서비스 구동을 위한 기술적 인프라로 다음 서비스와 연동됩니다.
             <ul>
@@ -182,7 +182,7 @@
       <div class="section-card">
         <h2>5. 이용자의 권리 및 삭제 요청</h2>
         <p>이용자는 언제든지 자신의 개인정보 처리 상태를 확인하고, 대시보드에 게시된 본인의 전적 표시 이름 삭제 또는 익명화를 요청할 수 있습니다.</p>
-        <p>삭제 또는 익명화 요청은 아래 문의처로 접수할 수 있으며, 접수 즉시 저장소의 기록을 수정하여 표시 이름을 제거하거나 임의의 식별자(예: 익명 플레이어)로 대체합니다.</p>
+        <p>삭제 또는 익명화 요청은 아래 문의처로 접수할 수 있으며, 확인 후 대시보드와 저장소의 현재 기록에서 표시 이름을 제거하거나 임의의 식별자(예: 익명 플레이어)로 대체합니다. 다만 공개 GitHub 저장소의 과거 변경 이력에는 이전 기록이 남아 있을 수 있습니다.</p>
       </div>
 
       <div class="section-card">
@@ -209,7 +209,7 @@
         <p>The Service processes only the minimum data required to organize custom matches.</p>
         <ul>
           <li><strong>Discord OAuth Identity Data (`identify` scope):</strong> Discord User ID, username, global display name, and avatar hash.</li>
-          <li><strong>Discord Guild Data:</strong> Server nickname, voice channel presence, and online status (used only for automated team shuffling).</li>
+          <li><strong>Discord Guild Data:</strong> Server nickname and online status (used only to pick 6 online members when a new match starts).</li>
           <li><strong>Match & Gameplay Data:</strong> Match/round number, season identifier, game timestamp, team rosters (Team 1 / Team 2), chosen champion IDs, win/loss outcome, and correction/reverse logs.</li>
         </ul>
       </div>
@@ -227,7 +227,7 @@
       <div class="section-card">
         <h2>4. Data Storage and Third Parties</h2>
         <ul>
-          <li><strong>Storage & Retention:</strong> Historical match records are stored on the operator's personal server and an encrypted/versioned GitHub backup repository.</li>
+          <li><strong>Storage & Retention:</strong> Historical match records are stored on the operator's personal server and are also backed up to a public GitHub repository (github.com/HANSOLJJ/lol_arena) that anyone can view. Records are kept for as long as the Service is operated.</li>
           <li><strong>No Commercial Exploitation:</strong> User data is never sold, leased, or utilized for advertising, monetization, or profiling.</li>
           <li><strong>Third-Party Infrastructure:</strong> No data is shared with third parties for commercial gain. Technical dependencies include:
             <ul>
@@ -242,7 +242,7 @@
       <div class="section-card">
         <h2>5. User Rights and Deletion Requests</h2>
         <p>Users have the right to request access to, correction of, or deletion/anonymization of their match history and associated display names.</p>
-        <p>Upon request sent to the contact address below, the operator will promptly remove the requested display name from the public record or replace it with an anonymous identifier (e.g., "Player X").</p>
+        <p>Upon request sent to the contact address below, the operator will remove the requested display name from the dashboard and the current files of the repository, or replace it with an anonymous identifier (e.g., "Player X"). Earlier versions may remain in the public GitHub repository's commit history.</p>
       </div>
 
       <div class="section-card">
