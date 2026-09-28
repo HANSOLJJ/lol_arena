@@ -12,25 +12,31 @@ describe('parseServerMessage', () => {
     assert.ok(
       parseServerMessage({
         t: 'reply',
-        id: 'd-1',
+        id: 'k-7',
         ok: false,
-        code: 'not_allowed',
-        message: '운영 모드에서는 데모 카운트다운을 쓸 수 없습니다.',
-        state_version: 3,
+        code: 'not_your_turn',
+        message: '지금은 청명사냥꾼 님의 차례입니다.',
+        state_version: 41,
       }),
     )
   })
 
-  it('데모 카운트다운 state를 받아들인다', () => {
-    const demo = state({
-      game_id: 'demo',
-      phase: 'picking',
-      turn_id: 'demo-1',
-      deadline_ms: 1790000020000,
-      grace_ms: 2000,
-      state_version: 4,
+  it('completed 상태의 result와 corrected를 정상적으로 검증한다', () => {
+    const completed = state({
+      phase: 'completed',
+      result: {
+        winner: 'team2',
+        recorded_ms: 1790000900000,
+        corrected: { from: 'team1', at_ms: 1790000960000 },
+      },
     })
-    assert.deepEqual(parseServerMessage(demo), demo)
+    assert.deepEqual(parseServerMessage(completed), completed)
+  })
+
+  it('protocol_version이 1이거나 다르면 거절한다', () => {
+    assert.equal(parseServerMessage(state({ protocol_version: 1 })), null)
+    assert.equal(parseServerMessage(state({ protocol_version: 3 })), null)
+    assert.equal(parseServerMessage(state({ protocol_version: '2' })), null)
   })
 
   it('모르는 추가 필드는 허용한다', () => {
@@ -45,6 +51,14 @@ describe('parseServerMessage', () => {
     assert.equal(parseServerMessage({ t: 'pong', id: 'p-1', c: 1 }), null)
     const { me: _me, ...noMe } = state()
     assert.equal(parseServerMessage(noMe), null)
+    const { players: _players, ...noPlayers } = state()
+    assert.equal(parseServerMessage(noPlayers), null)
+    const { pick_order: _po, ...noPickOrder } = state()
+    assert.equal(parseServerMessage(noPickOrder), null)
+    const { champions: _champs, ...noChampions } = state()
+    assert.equal(parseServerMessage(noChampions), null)
+    const { selections: _sel, ...noSelections } = state()
+    assert.equal(parseServerMessage(noSelections), null)
     // null로 보내야 하는 필드를 생략해도 거부한다.
     const { deadline_ms: _deadline, ...noDeadline } = state()
     assert.equal(parseServerMessage(noDeadline), null)
@@ -56,7 +70,19 @@ describe('parseServerMessage', () => {
     assert.equal(parseServerMessage(state({ phase: 'unknown' })), null)
     assert.equal(parseServerMessage(state({ deadline_ms: '1790000020000' })), null)
     assert.equal(parseServerMessage(state({ selections: [] })), null)
+    assert.equal(parseServerMessage(state({ selections: { a: 123 } })), null)
+    assert.equal(parseServerMessage(state({ players: [{ id: '1', name: 'a', team: 'team3', wins: 0 }] })), null)
+    assert.equal(parseServerMessage(state({ champions: [{ id: '1' }] })), null)
     assert.equal(parseServerMessage(state({ me: { id: USER.id, role: 'admin' } })), null)
+    assert.equal(parseServerMessage(state({ me: { ...state().me, can_pick: 'true' } })), null)
+    assert.equal(
+      parseServerMessage(
+        state({
+          result: { winner: 'invalid', recorded_ms: 1000, corrected: null },
+        }),
+      ),
+      null,
+    )
     assert.equal(parseServerMessage(hello({ user: { ...USER, id: Number(USER.id) } })), null)
     assert.equal(parseServerMessage({ t: 'pong', id: 3, c: 1, s: 2 }), null)
     assert.equal(parseServerMessage({ t: 'reply', id: 'd-1', ok: 'false', code: 'x', message: null, state_version: 1 }), null)
