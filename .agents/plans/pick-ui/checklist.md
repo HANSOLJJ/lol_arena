@@ -7,10 +7,10 @@
 - [x] 2. 요청 전송 및 통신 계층 갱신
   - [x] `connection.ts`에 start, pick, result, reverse 메서드 구현 및 demo_countdown 제거
   - [x] `connection.test.ts` 갱신 및 통과 확인
-- [ ] 3. 뷰 계산 순수 함수 및 픽스처 작성
-  - [ ] `fixtures.ts`에 phase별(none, starting, picking, awaiting_result, completed 등) v2 픽스처 작성
-  - [ ] `view-logic.ts`에 순수 판정 함수 분리 (picker, champion lock, 5초 경고, 버튼 활성화)
-  - [ ] `view-logic.test.ts` 작성 및 통과 확인
+- [x] 3. 뷰 계산 순수 함수 및 픽스처 작성
+  - [x] `fixtures.ts`에 phase별(none, starting, picking, awaiting_result, completed 등) v2 픽스처 작성
+  - [x] `view-logic.ts`에 순수 판정 함수 분리 (picker, champion lock, 5초 경고, 버튼 활성화)
+  - [x] `view-logic.test.ts` 작성 및 통과 확인
 - [ ] 4. React 훅 및 개발 전용 미리보기 구현
   - [ ] `useActivity.ts`에서 v2 액션 바인딩 및 토스트/펜딩 상태 처리
   - [ ] `import.meta.env.DEV` 전용 미리보기 라우팅 및 상태 주입 구현
