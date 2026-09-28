@@ -28,7 +28,7 @@
 - [ ] 7. 픽 화면 검토 반영 및 약관/개인정보 처리방침
   - [x] 7-1. `fixtures.ts`의 `me.id` 수정 (`SAMPLE_PLAYERS[0].id`로 수정) 및 검증
   - [x] 7-2. `vite.config.ts`에 `/ddragon` 프록시 추가 (`changeOrigin: true`, prefix 제거)
-  - [ ] 7-3. 외부 글꼴 제거 및 Barlow Condensed (600, 700) 로컬 woff2/OFL.txt 추가, 시스템 글꼴 폴백 적용
+  - [x] 7-3. 외부 글꼴 제거 및 Barlow Condensed (600, 700) 로컬 woff2/OFL.txt 추가, 시스템 글꼴 폴백 적용
   - [ ] 7-4. `terms.html`, `privacy.html` 정적 페이지 작성 (어두운 테마, 한글+영문, 상호 링크, 대시보드 링크)
   - [ ] 7-5. 전체 검증 (`npm run build`, `npm run lint`, `npm test`) 및 논리 단위 커밋, 완료 보고
 
