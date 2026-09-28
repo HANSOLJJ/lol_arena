@@ -10,9 +10,17 @@ export interface GameListProps {
   games: Game[]
   players: Record<string, string>
   championPortraits: Record<string, string>
+  selectedPlayerIds?: string[]
+  championQuery?: string
 }
 
-export function GameList({ games, players, championPortraits }: GameListProps) {
+export function GameList({
+  games,
+  players,
+  championPortraits,
+  selectedPlayerIds = [],
+  championQuery = '',
+}: GameListProps) {
   const [page, setPage] = useState(1)
 
   const visibleCount = page * DEFAULT_PAGE_SIZE
@@ -39,6 +47,8 @@ export function GameList({ games, players, championPortraits }: GameListProps) {
           game={game}
           players={players}
           championPortraits={championPortraits}
+          selectedPlayerIds={selectedPlayerIds}
+          championQuery={championQuery}
         />
       ))}
 

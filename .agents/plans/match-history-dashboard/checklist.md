@@ -36,13 +36,13 @@
   - [x] `types.ts`: `SortOrder`, `RecordSummary` 타입 정의
   - [x] `filter.ts`: 공백 무시 챔피언 검색, 같은 팀(최대 3명) 필터, 승패 요약 계산, 정렬 로직 구현
   - [x] `filter.test.ts`: 챔피언 검색, 같은 팀 조건, 승패 요약, 정렬 단위 테스트 검증
-- [ ] 7. UI 컴포넌트 및 스타일 수정 (`src/dashboard/components/`, `DashboardApp.tsx`)
-  - [ ] `DashboardFilters.tsx`: 챔피언 검색창, 정렬 드롭다운, 칩 최대 3개 제한, 승패 요약, 모바일 필터 접기/펼치기
-  - [ ] `DashboardTabs.module.css`: 가로 스크롤바 숨김 처리
-  - [ ] `GameCard.tsx` & `.module.css`: 일치 챔피언/선택 플레이어 줄 강조, 480px 이하 좌우 2열 배치 및 이름/챔피언 2줄 스택
-  - [ ] `DashboardApp.tsx`: 정렬 상태, 검색어 상태 연동 및 GameCard 강조 props 전달
-- [ ] 8. 2차 수정 최종 검증 및 빌드 확인
-  - [ ] `npm test` 전체 통과 확인
-  - [ ] `npm run lint` 경고 0건 확인
-  - [ ] `npm run build` 다중 페이지 빌드 생성 확인
-  - [ ] 변경 사항 커밋 및 완료 보고
+- [x] 7. UI 컴포넌트 및 스타일 수정 (`src/dashboard/components/`, `DashboardApp.tsx`)
+  - [x] `DashboardFilters.tsx`: 챔피언 검색창, 정렬 드롭다운, 칩 최대 3개 제한, 승패 요약, 모바일 필터 접기/펼치기
+  - [x] `DashboardTabs.module.css`: 가로 스크롤바 숨김 처리
+  - [x] `GameCard.tsx` & `.module.css`: 일치 챔피언/선택 플레이어 줄 강조, 480px 이하 좌우 2열 배치 및 이름/챔피언 2줄 스택
+  - [x] `DashboardApp.tsx`: 정렬 상태, 검색어 상태 연동 및 GameCard 강조 props 전달
+- [x] 8. 2차 수정 최종 검증 및 빌드 확인
+  - [x] `npm test` 전체 통과 확인
+  - [x] `npm run lint` 경고 0건 확인
+  - [x] `npm run build` 다중 페이지 빌드 생성 확인
+  - [x] 변경 사항 커밋 및 완료 보고

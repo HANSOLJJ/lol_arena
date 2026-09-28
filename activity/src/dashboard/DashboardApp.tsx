@@ -8,16 +8,18 @@ import './dashboard.css'
 import styles from './DashboardApp.module.css'
 import { useChampionPortraits } from './hooks/useChampionPortraits.ts'
 import { useHistoryData } from './hooks/useHistoryData.ts'
-import { extractUniqueChampions, filterGames } from './lib/filter.ts'
+import { calculateTeamRecord, filterGames } from './lib/filter.ts'
 import { buildPeriodOptions, getDefaultPeriod, splitSessions } from './lib/session.ts'
+import type { SortOrder } from './lib/types.ts'
 
 export function DashboardApp() {
   const { data, loading, error, lastUpdated, refresh } = useHistoryData()
   const championPortraits = useChampionPortraits()
 
   const [period, setPeriod] = useState<string | null>(null)
+  const [sortOrder, setSortOrder] = useState<SortOrder>('desc')
   const [selectedPlayerIds, setSelectedPlayerIds] = useState<string[]>([])
-  const [selectedChampion, setSelectedChampion] = useState<string>('')
+  const [championQuery, setChampionQuery] = useState<string>('')
 
   const allGames = useMemo(() => data?.games ?? [], [data])
   const players = useMemo(() => data?.players ?? {}, [data])
@@ -28,8 +30,8 @@ export function DashboardApp() {
     [allGames, sessions],
   )
 
-  const activePeriod = period ?? getDefaultPeriod(allGames)
-  const champions = useMemo(() => extractUniqueChampions(allGames), [allGames])
+  const defaultPeriod = useMemo(() => getDefaultPeriod(allGames), [allGames])
+  const activePeriod = period ?? defaultPeriod
 
   const filteredGames = useMemo(() => {
     return filterGames(
@@ -37,17 +39,16 @@ export function DashboardApp() {
       {
         period: activePeriod,
         selectedPlayerIds,
-        selectedChampion,
+        championQuery,
+        sortOrder,
       },
       sessions,
     )
-  }, [allGames, activePeriod, selectedPlayerIds, selectedChampion, sessions])
+  }, [allGames, activePeriod, selectedPlayerIds, championQuery, sortOrder, sessions])
 
-  const sortedGames = useMemo(() => {
-    return [...filteredGames].sort(
-      (a, b) => new Date(b.time).getTime() - new Date(a.time).getTime(),
-    )
-  }, [filteredGames])
+  const recordSummary = useMemo(() => {
+    return calculateTeamRecord(filteredGames, selectedPlayerIds)
+  }, [filteredGames, selectedPlayerIds])
 
   const handleTogglePlayer = (id: string) => {
     setSelectedPlayerIds((prev) =>
@@ -57,10 +58,11 @@ export function DashboardApp() {
 
   const handleResetFilters = () => {
     setSelectedPlayerIds([])
-    setSelectedChampion('')
+    setChampionQuery('')
+    setSortOrder('desc')
   }
 
-  const filterKey = `${activePeriod}-${selectedPlayerIds.join(',')}-${selectedChampion}`
+  const filterKey = `${activePeriod}-${sortOrder}-${selectedPlayerIds.join(',')}-${championQuery}`
 
   return (
     <div className={styles.wrap}>
@@ -92,25 +94,30 @@ export function DashboardApp() {
         <>
           <DashboardFilters
             period={activePeriod}
+            defaultPeriod={defaultPeriod}
             onPeriodChange={setPeriod}
             periodOptions={periodOptions}
             sessions={sessions}
+            sortOrder={sortOrder}
+            onSortOrderChange={setSortOrder}
             players={players}
             selectedPlayerIds={selectedPlayerIds}
             onTogglePlayer={handleTogglePlayer}
-            champions={champions}
-            selectedChampion={selectedChampion}
-            onChampionChange={setSelectedChampion}
+            championQuery={championQuery}
+            onChampionQueryChange={setChampionQuery}
             totalCount={allGames.length}
             filteredCount={filteredGames.length}
+            recordSummary={recordSummary}
             onResetFilters={handleResetFilters}
           />
 
           <GameList
             key={filterKey}
-            games={sortedGames}
+            games={filteredGames}
             players={players}
             championPortraits={championPortraits}
+            selectedPlayerIds={selectedPlayerIds}
+            championQuery={championQuery}
           />
         </>
       )}
