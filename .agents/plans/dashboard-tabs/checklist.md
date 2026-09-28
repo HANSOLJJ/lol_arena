@@ -33,4 +33,4 @@
   - [x] `npm test` 통과 (206개 테스트 통과)
   - [x] `npm run lint` 통과 (경고 0, 오류 0)
   - [x] `npm run build` 통과 (`tsc -b && vite build`)
-- [ ] 8. 커밋 및 코디네이터 완료 보고
+- [x] 8. 커밋 및 코디네이터 완료 보고
