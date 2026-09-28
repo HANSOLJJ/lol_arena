@@ -13,18 +13,18 @@
 - [x] 3. 커스텀 훅 및 자동 갱신 구현 (`src/dashboard/hooks/`)
   - [x] `useHistoryData.ts`: 초기 로드, visibilitychange 감지, 20초 주기 HEAD 요청 ETag/Last-Modified 비교 폴링, 수동 갱신
   - [x] `useChampionPortraits.ts`: Data Dragon 초상화 매핑 로드 훅
-- [ ] 4. React 컴포넌트 및 스타일 구현 (`src/dashboard/components/`, `src/dashboard/`)
-  - [ ] 공통 스타일 변수 및 리셋 CSS
-  - [ ] `DashboardHeader.tsx`: 타이틀, 갱신 시각, 새로고침 버튼
-  - [ ] `DashboardTabs.tsx`: 가로 스크롤 탭 바, 레거시 링크 탭
-  - [ ] `DashboardFilters.tsx`: 기간/플레이어 칩/챔피언 드롭다운/결과 판수
-  - [ ] `ChampionPortrait.tsx`: 초상화 이미지 및 첫 글자 원형 폴백
-  - [ ] `GameCard.tsx`: 머리줄, 승리팀 강조, 패배팀 불투명도, 번복 배지, 양 팀 플레이어 목록
-  - [ ] `GameList.tsx`: 30개 단위 페이지네이션 및 "더 보기" 버튼
-  - [ ] `DashboardApp.tsx`: 대시보드 통합 화면
-  - [ ] `main.tsx`: 대시보드 마운트 엔트리포인트
-- [ ] 5. 검증 및 빌드 확인
-  - [ ] `npm test` 전체 통과 확인
-  - [ ] `npm run lint` 경고 0건 확인
-  - [ ] `npm run build` 다중 페이지 빌드(`dist/index.html`, `dist/dashboard.html`) 생성 확인
-  - [ ] 변경 사항 커밋 및 완료 보고
+- [x] 4. React 컴포넌트 및 스타일 구현 (`src/dashboard/components/`, `src/dashboard/`)
+  - [x] 공통 스타일 변수 및 리셋 CSS
+  - [x] `DashboardHeader.tsx`: 타이틀, 갱신 시각, 새로고침 버튼
+  - [x] `DashboardTabs.tsx`: 가로 스크롤 탭 바, 레거시 링크 탭
+  - [x] `DashboardFilters.tsx`: 기간/플레이어 칩/챔피언 드롭다운/결과 판수
+  - [x] `ChampionPortrait.tsx`: 초상화 이미지 및 첫 글자 원형 폴백
+  - [x] `GameCard.tsx`: 머리줄, 승리팀 강조, 패배팀 불투명도, 번복 배지, 양 팀 플레이어 목록
+  - [x] `GameList.tsx`: 30개 단위 페이지네이션 및 "더 보기" 버튼
+  - [x] `DashboardApp.tsx`: 대시보드 통합 화면
+  - [x] `main.tsx`: 대시보드 마운트 엔트리포인트
+- [x] 5. 검증 및 빌드 확인
+  - [x] `npm test` 전체 통과 확인
+  - [x] `npm run lint` 경고 0건 확인
+  - [x] `npm run build` 다중 페이지 빌드(`dist/index.html`, `dist/dashboard.html`) 생성 확인
+  - [x] 변경 사항 커밋 및 완료 보고
