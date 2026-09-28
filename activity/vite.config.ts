@@ -17,4 +17,7 @@ export default defineConfig({
       '/pick-api': { target: 'http://127.0.0.1:8790', ws: true },
     },
   },
+  // 첫 접속 중에 SDK를 최적화하면 Vite가 페이지를 새로고침해 Discord와의 SDK 연결 확인이 끊기고
+  // 액티비티가 "연결 중"에 멈춘다. 서버 시작 때 미리 최적화해 둔다.
+  optimizeDeps: { include: ['@discord/embedded-app-sdk'] },
 })
