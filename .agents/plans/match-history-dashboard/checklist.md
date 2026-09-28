@@ -3,13 +3,13 @@
 - [x] 1. 환경 설정 및 빌드 구성
   - [x] `activity/vite.config.ts`에 `dashboard.html` 엔트리 추가 및 `/history_data.json` 프록시 설정
   - [x] `activity/dashboard.html` 생성 (Pretendard 웹폰트 링크, 뷰포트, 타이틀, 루트 엘리먼트)
-- [ ] 2. 순수 함수 라이브러리 및 단위 테스트 구현 (`src/dashboard/lib/`)
-  - [ ] `types.ts`: 도메인 타입 정의
-  - [ ] `validation.ts` & `validation.test.ts`: JSON 데이터 유효성 검증 및 거부 테스트
-  - [ ] `time.ts` & `time.test.ts`: KST 변환 (`9월 27일 (일) 03:31` 형식) 테스트
-  - [ ] `session.ts` & `session.test.ts`: 6시간 공백 기준 세션 분할, 라벨 포맷팅, 기본 기간(최신 시즌) 테스트
-  - [ ] `filter.ts` & `filter.test.ts`: 기간 필터, 다중 플레이어 칩 필터, 챔피언 필터 테스트
-  - [ ] `ddragon.ts` & `ddragon.test.ts`: Data Dragon 매핑 및 URL 생성 (기본 주소 인자 지원)
+- [x] 2. 순수 함수 라이브러리 및 단위 테스트 구현 (`src/dashboard/lib/`)
+  - [x] `types.ts`: 도메인 타입 정의
+  - [x] `validation.ts` & `validation.test.ts`: JSON 데이터 유효성 검증 및 거부 테스트
+  - [x] `time.ts` & `time.test.ts`: KST 변환 (`9월 27일 (일) 03:31` 형식) 테스트
+  - [x] `session.ts` & `session.test.ts`: 6시간 공백 기준 세션 분할, 라벨 포맷팅, 기본 기간(최신 시즌) 테스트
+  - [x] `filter.ts` & `filter.test.ts`: 기간 필터, 다중 플레이어 칩 필터, 챔피언 필터 테스트
+  - [x] `ddragon.ts` & `ddragon.test.ts`: Data Dragon 매핑 및 URL 생성 (기본 주소 인자 지원)
 - [ ] 3. 커스텀 훅 및 자동 갱신 구현 (`src/dashboard/hooks/`)
   - [ ] `useHistoryData.ts`: 초기 로드, visibilitychange 감지, 20초 주기 HEAD 요청 ETag/Last-Modified 비교 폴링, 수동 갱신
   - [ ] `useChampionPortraits.ts`: Data Dragon 초상화 매핑 로드 훅
