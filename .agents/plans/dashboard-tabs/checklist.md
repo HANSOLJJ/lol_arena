@@ -12,25 +12,25 @@
   - [x] 실제 `history_data.json` 기준 전 기간(전체, 시즌1, 시즌2, 13개 세션) 전수 비교
   - [x] 개인 6명 전원, 2인 모든 조합, 3인 모든 조합, 챔피언 전체, 3:3 매치업 전체 대조
   - [x] 빈 데이터, 1판 데이터, 동률 정렬 단위 테스트
-- [ ] 3. 탭 네비게이션 및 URL 해시 동기화 구현
-  - [ ] `DashboardTabs.tsx`: 6개 탭(history, player, pair, trio, champ, matchup) 버튼 지원
-  - [ ] URL 해시(`#history`, `#player`, `#personal`, `#pair`, `#trio`, `#champ`, `#matchup`) 양방향 동기화
-- [ ] 4. 필터 컨트롤 개선 (`DashboardFilters.tsx`)
-  - [ ] 탭별 인원 선택 제한(SEL_MAX) 적용
-  - [ ] 통계 탭용 최소 판수 슬라이더(1~10) 추가
-  - [ ] 대전 기록 전용 컨트롤(검색, 정렬) 조건부 노출
-- [ ] 5. 통계 탭 UI 컴포넌트 구현
-  - [ ] 공통 반응형 테이블 컴포넌트(`StatsTable.tsx`)
-  - [ ] 개인 탭 PC 테이블 + 모바일 카드 뷰 + 드릴다운 헤더/뒤로가기 + 초상화 툴팁
-  - [ ] 2인 / 3인 시너지 뷰
-  - [ ] 챔피언 뷰
-  - [ ] 3:3 매치업 뷰
-  - [ ] 탭별 하단 안내 문구 노출
-- [ ] 6. 모바일 반응형(390px 폭) 및 접근성 검증
-  - [ ] 가로 넘침 방지 (`tablewrap` 스크롤)
-  - [ ] 터치 대상 44px 이상 확보
-- [ ] 7. 전체 테스트, 린트, 빌드 검증
-  - [ ] `npm test` 통과
-  - [ ] `npm run lint` 통과 (경고 0, 오류 0)
-  - [ ] `npm run build` 통과
+- [x] 3. 탭 네비게이션 및 URL 해시 동기화 구현
+  - [x] `DashboardTabs.tsx`: 6개 탭(history, player, pair, trio, champ, matchup) 버튼 지원
+  - [x] URL 해시(`#history`, `#player`, `#personal`, `#pair`, `#trio`, `#champ`, `#matchup`) 양방향 동기화
+- [x] 4. 필터 컨트롤 개선 (`DashboardFilters.tsx` / `StatsFilters.tsx`)
+  - [x] 탭별 인원 선택 제한(SEL_MAX) 적용
+  - [x] 통계 탭용 최소 판수 슬라이더(1~10) 추가
+  - [x] 대전 기록 전용 컨트롤(검색, 정렬) 조건부 노출
+- [x] 5. 통계 탭 UI 컴포넌트 구현
+  - [x] 공통 반응형 테이블 컴포넌트 스타일 (`StatsTable.module.css`)
+  - [x] 개인 탭 PC 테이블 + 모바일 카드 뷰 + 드릴다운 헤더/뒤로가기 + 초상화 툴팁 (`PlayerStatsView.tsx`)
+  - [x] 2인 / 3인 시너지 뷰 (`ComboStatsView.tsx`)
+  - [x] 챔피언 뷰 (`ChampStatsView.tsx`)
+  - [x] 3:3 매치업 뷰 (`MatchupStatsView.tsx`)
+  - [x] 탭별 하단 안내 문구 노출
+- [x] 6. 모바일 반응형(390px 폭) 및 접근성 검증
+  - [x] 가로 넘침 방지 (`tablewrap` 스크롤)
+  - [x] 터치 대상 44px 이상 확보
+- [x] 7. 전체 테스트, 린트, 빌드 검증
+  - [x] `npm test` 통과 (206개 테스트 통과)
+  - [x] `npm run lint` 통과 (경고 0, 오류 0)
+  - [x] `npm run build` 통과 (`tsc -b && vite build`)
 - [ ] 8. 커밋 및 코디네이터 완료 보고
