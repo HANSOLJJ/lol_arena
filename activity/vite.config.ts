@@ -1,5 +1,9 @@
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -15,9 +19,22 @@ export default defineConfig({
     // 봇의 액티비티 서버(127.0.0.1:8790)로 HTTP와 WebSocket을 함께 넘긴다.
     proxy: {
       '/pick-api': { target: 'http://127.0.0.1:8790', ws: true },
+      '/history_data.json': {
+        target: 'https://arena.hansoljj.com',
+        changeOrigin: true,
+      },
+    },
+  },
+  build: {
+    rollupOptions: {
+      input: {
+        activity: resolve(__dirname, 'index.html'),
+        dashboard: resolve(__dirname, 'dashboard.html'),
+      },
     },
   },
   // 첫 접속 중에 SDK를 최적화하면 Vite가 페이지를 새로고침해 Discord와의 SDK 연결 확인이 끊기고
   // 액티비티가 "연결 중"에 멈춘다. 서버 시작 때 미리 최적화해 둔다.
   optimizeDeps: { include: ['@discord/embedded-app-sdk'] },
 })
+
