@@ -3,6 +3,19 @@
 .listContainer {
   display: flex;
   flex-direction: column;
+  gap: 12px;
+}
+
+@media (min-width: 980px) {
+  .listContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+
+  .loadMoreContainer {
+    grid-column: 1 / -1;
+  }
 }
 
 .emptyMessage {
