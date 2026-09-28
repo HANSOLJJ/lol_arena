@@ -104,7 +104,7 @@ export function startingState(overrides: Record<string, unknown> = {}): StateMes
     auto_assigned: [],
     result: null,
     me: {
-      id: SAMPLE_PLAYERS[4].id, // 정한솔
+      id: SAMPLE_PLAYERS[0].id, // 정한솔
       role: 'player',
       team: 'team1',
       can_start: false,
@@ -143,7 +143,7 @@ export function pickingMyTurnState(overrides: Record<string, unknown> = {}): Sta
     auto_assigned: ['111111111111111111'],
     result: null,
     me: {
-      id: SAMPLE_PLAYERS[4].id, // 정한솔
+      id: SAMPLE_PLAYERS[0].id, // 정한솔
       role: 'player',
       team: 'team1',
       can_start: false,
@@ -177,7 +177,7 @@ export function pickingOtherTurnState(overrides: Record<string, unknown> = {}): 
     auto_assigned: [],
     result: null,
     me: {
-      id: SAMPLE_PLAYERS[4].id, // 정한솔 (대기 중)
+      id: SAMPLE_PLAYERS[0].id, // 정한솔 (대기 중)
       role: 'player',
       team: 'team1',
       can_start: false,
@@ -226,7 +226,7 @@ export function awaitingResultState(overrides: Record<string, unknown> = {}): St
     auto_assigned: ['111111111111111111'],
     result: null,
     me: {
-      id: SAMPLE_PLAYERS[4].id,
+      id: SAMPLE_PLAYERS[0].id,
       role: 'player',
       team: 'team1',
       can_start: true,
@@ -270,7 +270,7 @@ export function completedState(overrides: Record<string, unknown> = {}): StateMe
       corrected: null,
     },
     me: {
-      id: SAMPLE_PLAYERS[4].id,
+      id: SAMPLE_PLAYERS[0].id,
       role: 'player',
       team: 'team1',
       can_start: true,
