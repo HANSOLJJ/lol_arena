@@ -54,7 +54,7 @@ export function GameCard({ game, players, championPortraits }: GameCardProps) {
         >
           <div className={`${styles.teamTitle} ${styles.team1}`}>
             <span>TEAM 1</span>
-            {isTeam1Winner && <span aria-label="승리">🏆</span>}
+            <span className={styles.resultLabel}>{isTeam1Winner ? '승리' : '패배'}</span>
           </div>
           <div className={styles.playerList}>
             {game.team1.map((slot) => {
@@ -83,7 +83,7 @@ export function GameCard({ game, players, championPortraits }: GameCardProps) {
         >
           <div className={`${styles.teamTitle} ${styles.team2}`}>
             <span>TEAM 2</span>
-            {isTeam2Winner && <span aria-label="승리">🏆</span>}
+            <span className={styles.resultLabel}>{isTeam2Winner ? '승리' : '패배'}</span>
           </div>
           <div className={styles.playerList}>
             {game.team2.map((slot) => {

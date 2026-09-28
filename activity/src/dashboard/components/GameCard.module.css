@@ -109,17 +109,47 @@
 }
 
 .teamBox.winner.team1 {
-  border-color: var(--team1-border);
+  border-color: var(--team1);
+  box-shadow: inset 0 0 0 1px var(--team1);
   background: var(--team1-tint);
 }
 
 .teamBox.winner.team2 {
-  border-color: var(--team2-border);
+  border-color: var(--team2);
+  box-shadow: inset 0 0 0 1px var(--team2);
   background: var(--team2-tint);
 }
 
-.teamBox.loser {
-  opacity: 0.75;
+.teamBox.loser .playerName {
+  color: var(--muted);
+}
+
+.teamBox.loser img {
+  filter: grayscale(1);
+  opacity: 0.6;
+}
+
+.resultLabel {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+}
+
+.teamBox.winner.team1 .resultLabel {
+  background: var(--team1);
+  color: var(--bg);
+}
+
+.teamBox.winner.team2 .resultLabel {
+  background: var(--team2);
+  color: var(--bg);
+}
+
+.teamBox.loser .resultLabel {
+  color: var(--muted);
+  border: 1px solid var(--border);
 }
 
 .teamTitle {
