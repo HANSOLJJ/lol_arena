@@ -1,17 +1,17 @@
 # 옛 전적 대시보드 5개 탭 이관 체크리스트
 
-- [ ] 1. 옛 index.html 계산 로직을 순수 함수(`src/dashboard/lib/stats.ts`)로 구현
-  - [ ] 승률(`calculateWinRate`), 번 돈(`calculateEarnings`), 바 셀 데이터 생성
-  - [ ] 조합 생성(`combos`), 조합 키(`trioKey`), 인원 우선 정렬(`orderIds`)
-  - [ ] 개인 탭 개요 계산(`calculatePlayerStats`) 및 드릴다운 계산(`calculatePlayerDrilldown`)
-  - [ ] 2인/3인 시너지 조합 계산(`calculateComboStats`)
-  - [ ] 챔피언 전체 픽/승률 계산(`calculateChampStats`)
-  - [ ] 3:3 매치업 대진 계산(`calculateMatchupStats`)
-  - [ ] 정렬 및 동률 보조 정렬 로직
-- [ ] 2. 대조 테스트(`src/dashboard/lib/legacy-compare.test.ts`) 및 단위 테스트(`src/dashboard/lib/stats.test.ts`) 작성 및 통과
-  - [ ] 실제 `history_data.json` 기준 전 기간(전체, 시즌1, 시즌2, 13개 세션) 전수 비교
-  - [ ] 개인 6명 전원, 2인 모든 조합, 3인 모든 조합, 챔피언 전체, 3:3 매치업 전체 대조
-  - [ ] 빈 데이터, 1판 데이터, 동률 정렬 단위 테스트
+- [x] 1. 옛 index.html 계산 로직을 순수 함수(`src/dashboard/lib/stats.ts`)로 구현
+  - [x] 승률(`calculateWinRate`), 번 돈(`calculateEarnings`), 바 셀 데이터 생성
+  - [x] 조합 생성(`combos`), 조합 키(`trioKey`), 인원 우선 정렬(`orderIds`)
+  - [x] 개인 탭 개요 계산(`calculatePlayerStats`) 및 드릴다운 계산(`calculatePlayerDrilldown`)
+  - [x] 2인/3인 시너지 조합 계산(`calculateComboStats`)
+  - [x] 챔피언 전체 픽/승률 계산(`calculateChampStats`)
+  - [x] 3:3 매치업 대진 계산(`calculateMatchupStats`)
+  - [x] 정렬 및 동률 보조 정렬 로직
+- [x] 2. 대조 테스트(`src/dashboard/lib/legacy-compare.test.ts`) 및 단위 테스트(`src/dashboard/lib/stats.test.ts`) 작성 및 통과
+  - [x] 실제 `history_data.json` 기준 전 기간(전체, 시즌1, 시즌2, 13개 세션) 전수 비교
+  - [x] 개인 6명 전원, 2인 모든 조합, 3인 모든 조합, 챔피언 전체, 3:3 매치업 전체 대조
+  - [x] 빈 데이터, 1판 데이터, 동률 정렬 단위 테스트
 - [ ] 3. 탭 네비게이션 및 URL 해시 동기화 구현
   - [ ] `DashboardTabs.tsx`: 6개 탭(history, player, pair, trio, champ, matchup) 버튼 지원
   - [ ] URL 해시(`#history`, `#player`, `#personal`, `#pair`, `#trio`, `#champ`, `#matchup`) 양방향 동기화
