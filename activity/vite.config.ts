@@ -12,5 +12,9 @@ export default defineConfig({
     allowedHosts: ['lol-dev.hansoljj.com'],
     // Discord 프록시·터널을 거치면 HMR 웹소켓도 https 기본 포트로 들어온다.
     hmr: { clientPort: 443 },
+    // 봇의 액티비티 서버(127.0.0.1:8790)로 HTTP와 WebSocket을 함께 넘긴다.
+    proxy: {
+      '/pick-api': { target: 'http://127.0.0.1:8790', ws: true },
+    },
   },
 })
