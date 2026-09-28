@@ -47,10 +47,21 @@ export interface PeriodOption {
   group?: 'season' | 'session'
 }
 
+export type SortOrder = 'desc' | 'asc'
+
+export interface RecordSummary {
+  total: number
+  wins: number
+  losses: number
+  winRate: number | null
+  formatted: string
+}
+
 export interface FilterState {
   period: string
   selectedPlayerIds: string[]
-  selectedChampion: string
+  championQuery: string
+  sortOrder?: SortOrder
 }
 
 export interface FormattedCorrected {
@@ -58,3 +69,4 @@ export interface FormattedCorrected {
   formattedAt: string
   summary: string
 }
+
