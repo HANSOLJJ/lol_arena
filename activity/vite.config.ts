@@ -23,6 +23,11 @@ export default defineConfig({
         target: 'https://arena.hansoljj.com',
         changeOrigin: true,
       },
+      '/ddragon': {
+        target: 'https://ddragon.leagueoflegends.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/ddragon/, ''),
+      },
     },
   },
   build: {
